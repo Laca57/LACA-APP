@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/utils/responsive.dart';
 import 'home_screen.dart';
-import 'track_shipment_screen.dart';
 import '../profile/account_screen.dart';
+import '../orders/orders_screen.dart';
+import '../inspectors/inspectors_screen.dart';
+import '../cargo_inspection/cargo_inspection_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -17,12 +20,15 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   final List<Widget> _screens = [
     const HomeScreen(),
     const OrdersScreen(),
-    const TrackShipmentScreen(),
+    const InspectorsScreen(),
+    const CargoInspectionScreen(),
     const AccountScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
+    final isTabletOrWider = Responsive.isTablet(context) || Responsive.isDesktop(context);
+
     return Scaffold(
       body: _screens[_currentIndex],
       bottomNavigationBar: Container(
@@ -31,84 +37,128 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.08),
-              blurRadius: 12,
-              offset: const Offset(0, -2),
+              blurRadius: 16,
+              offset: const Offset(0, -4),
             ),
           ],
         ),
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: BottomNavigationBar(
-              currentIndex: _currentIndex,
-              onTap: (index) => setState(() => _currentIndex = index),
-              backgroundColor: Colors.transparent,
-              selectedItemColor: AppColors.primary,
-              unselectedItemColor: AppColors.textLight,
-              selectedFontSize: 12,
-              unselectedFontSize: 12,
-              type: BottomNavigationBarType.fixed,
-              elevation: 0,
-              items: const [
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.home_outlined),
-                  activeIcon: Icon(Icons.home),
-                  label: 'Home',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.receipt_long_outlined),
-                  activeIcon: Icon(Icons.receipt_long),
-                  label: 'Orders',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.near_me_outlined),
-                  activeIcon: Icon(Icons.near_me),
-                  label: 'Track',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.person_outline),
-                  activeIcon: Icon(Icons.person),
-                  label: 'Account',
-                ),
-              ],
+            padding: EdgeInsets.fromLTRB(
+              isTabletOrWider ? 16 : 8,
+              isTabletOrWider ? 8 : 6,
+              isTabletOrWider ? 16 : 8,
+              isTabletOrWider ? 8 : 6,
+            ),
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: isTabletOrWider ? 8 : 4,
+                vertical: isTabletOrWider ? 6 : 4,
+              ),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.05),
+                borderRadius: BorderRadius.circular(isTabletOrWider ? 24 : 20),
+              ),
+              child: Row(
+                children: List.generate(5, (index) {
+                  return Expanded(
+                    child: _buildNavItem(
+                      context,
+                      isTabletOrWider: isTabletOrWider,
+                      icon: _icons[index],
+                      activeIcon: _activeIcons[index],
+                      label: _labels[index],
+                      isActive: _currentIndex == index,
+                      onTap: () => setState(() => _currentIndex = index),
+                    ),
+                  );
+                }),
+              ),
             ),
           ),
         ),
       ),
     );
   }
-}
 
-class OrdersScreen extends StatelessWidget {
-  const OrdersScreen({super.key});
+  Widget _buildNavItem(
+    BuildContext context, {
+    required bool isTabletOrWider,
+    required IconData icon,
+    required IconData activeIcon,
+    required String label,
+    required bool isActive,
+    required VoidCallback onTap,
+  }) {
+    final iconSize = isTabletOrWider ? 24.0 : Responsive.w(context, 20);
+    final fontSize = isTabletOrWider ? 12.0 : Responsive.sp(context, 11);
+    final gap = isTabletOrWider ? 8.0 : Responsive.w(context, 6);
+    final hp = isTabletOrWider ? 14.0 : Responsive.w(context, 10);
+    final vp = isTabletOrWider ? 10.0 : Responsive.h(context, 8);
+    final radius = isTabletOrWider ? 16.0 : 14.0;
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('My Orders'),
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
-        elevation: 0,
-      ),
-      body: const Center(
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: EdgeInsets.symmetric(
+          horizontal: isActive ? hp + 4 : hp,
+          vertical: vp,
+        ),
+        decoration: BoxDecoration(
+          color: isActive ? AppColors.primary : Colors.transparent,
+          borderRadius: BorderRadius.circular(radius),
+        ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.receipt_long_outlined, size: 64, color: AppColors.textLight),
-            SizedBox(height: 16),
-            Text(
-              'No orders yet',
-              style: TextStyle(fontSize: 18, color: AppColors.textSecondary),
+            Icon(
+              isActive ? activeIcon : icon,
+              size: iconSize,
+              color: isActive ? Colors.white : AppColors.textLight,
             ),
-            SizedBox(height: 8),
-            Text(
-              'Your orders will appear here',
-              style: TextStyle(fontSize: 14, color: AppColors.textLight),
+            SizedBox(height: gap),
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: fontSize,
+                    fontWeight: FontWeight.w600,
+                    color: isActive ? Colors.white : AppColors.textLight,
+                  ),
+                ),
+              ),
             ),
           ],
         ),
       ),
     );
   }
+
+  static const List<IconData> _icons = [
+    Icons.home_outlined,
+    Icons.receipt_long_outlined,
+    Icons.verified_outlined,
+    Icons.inventory_2_outlined,
+    Icons.person_outline,
+  ];
+
+  static const List<IconData> _activeIcons = [
+    Icons.home,
+    Icons.receipt_long,
+    Icons.verified,
+    Icons.inventory_2,
+    Icons.person,
+  ];
+
+  static const List<String> _labels = [
+    'Home',
+    'Orders',
+    'Inspectors',
+    'Cargo Insp.',
+    'Account',
+  ];
 }

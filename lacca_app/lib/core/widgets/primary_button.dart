@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
+import '../utils/responsive.dart';
 
 class PrimaryButton extends StatelessWidget {
   final String text;
@@ -8,7 +9,7 @@ class PrimaryButton extends StatelessWidget {
   final Color? backgroundColor;
   final Color? textColor;
   final IconData? icon;
-  final double height;
+  final double? height;
 
   const PrimaryButton({
     super.key,
@@ -18,14 +19,15 @@ class PrimaryButton extends StatelessWidget {
     this.backgroundColor,
     this.textColor,
     this.icon,
-    this.height = 52,
+    this.height,
   });
 
   @override
   Widget build(BuildContext context) {
+    final btnH = height ?? Responsive.h(context, 52);
     return SizedBox(
       width: double.infinity,
-      height: height,
+      height: btnH,
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
@@ -33,14 +35,14 @@ class PrimaryButton extends StatelessWidget {
           foregroundColor: textColor ?? AppColors.textWhite,
           disabledBackgroundColor: (backgroundColor ?? AppColors.primary).withValues(alpha: 0.5),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(Responsive.w(context, 12)),
           ),
         ),
         child: isLoading
-            ? const SizedBox(
-                height: 22,
-                width: 22,
-                child: CircularProgressIndicator(
+            ? SizedBox(
+                height: Responsive.w(context, 22),
+                width: Responsive.w(context, 22),
+                child: const CircularProgressIndicator(
                   strokeWidth: 2.5,
                   color: Colors.white,
                 ),
@@ -49,13 +51,13 @@ class PrimaryButton extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   if (icon != null) ...[
-                    Icon(icon, size: 20),
-                    const SizedBox(width: 8),
+                    Icon(icon, size: Responsive.sp(context, 20)),
+                    SizedBox(width: Responsive.w(context, 8)),
                   ],
                   Text(
                     text,
-                    style: const TextStyle(
-                      fontSize: 16,
+                    style: TextStyle(
+                      fontSize: Responsive.sp(context, 16),
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -80,29 +82,30 @@ class SecondaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final btnH = Responsive.h(context, 52);
     return SizedBox(
       width: double.infinity,
-      height: 52,
+      height: btnH,
       child: OutlinedButton(
         onPressed: onPressed,
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.primary,
           side: const BorderSide(color: AppColors.primary),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(Responsive.w(context, 12)),
           ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (icon != null) ...[
-              Icon(icon, size: 20),
-              const SizedBox(width: 8),
+              Icon(icon, size: Responsive.sp(context, 20)),
+              SizedBox(width: Responsive.w(context, 8)),
             ],
             Text(
               text,
-              style: const TextStyle(
-                fontSize: 16,
+              style: TextStyle(
+                fontSize: Responsive.sp(context, 16),
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -129,9 +132,10 @@ class GreenButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final btnH = Responsive.h(context, 52);
     return SizedBox(
       width: double.infinity,
-      height: 52,
+      height: btnH,
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
@@ -139,14 +143,14 @@ class GreenButton extends StatelessWidget {
           foregroundColor: Colors.white,
           disabledBackgroundColor: AppColors.secondary.withValues(alpha: 0.5),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(Responsive.w(context, 12)),
           ),
         ),
         child: isLoading
-            ? const SizedBox(
-                height: 22,
-                width: 22,
-                child: CircularProgressIndicator(
+            ? SizedBox(
+                height: Responsive.w(context, 22),
+                width: Responsive.w(context, 22),
+                child: const CircularProgressIndicator(
                   strokeWidth: 2.5,
                   color: Colors.white,
                 ),
@@ -155,13 +159,13 @@ class GreenButton extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   if (icon != null) ...[
-                    Icon(icon, size: 20),
-                    const SizedBox(width: 8),
+                    Icon(icon, size: Responsive.sp(context, 20)),
+                    SizedBox(width: Responsive.w(context, 8)),
                   ],
                   Text(
                     text,
-                    style: const TextStyle(
-                      fontSize: 16,
+                    style: TextStyle(
+                      fontSize: Responsive.sp(context, 16),
                       fontWeight: FontWeight.w600,
                     ),
                   ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
+import '../utils/responsive.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController? controller;
@@ -39,13 +40,13 @@ class CustomTextField extends StatelessWidget {
         if (label != null) ...[
           Text(
             label!,
-            style: const TextStyle(
-              fontSize: 14,
+            style: TextStyle(
+              fontSize: Responsive.sp(context, 14),
               fontWeight: FontWeight.w500,
               color: AppColors.textPrimary,
             ),
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: Responsive.h(context, 6)),
         ],
         TextFormField(
           controller: controller,
@@ -54,51 +55,52 @@ class CustomTextField extends StatelessWidget {
           maxLines: maxLines,
           validator: validator,
           onChanged: onChanged,
-          style: const TextStyle(
-            fontSize: 15,
+          style: TextStyle(
+            fontSize: Responsive.sp(context, 15),
             color: AppColors.textPrimary,
           ),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: const TextStyle(
+            hintStyle: TextStyle(
               color: AppColors.textLight,
-              fontSize: 14,
+              fontSize: Responsive.sp(context, 14),
             ),
             prefixIcon: prefixIcon != null
-                ? Icon(prefixIcon, color: AppColors.textLight, size: 20)
+                ? Icon(prefixIcon, color: AppColors.textLight, size: Responsive.w(context, 20))
                 : null,
             prefixText: prefixText,
-            prefixStyle: const TextStyle(
+            prefixStyle: TextStyle(
               color: AppColors.textPrimary,
               fontWeight: FontWeight.w500,
+              fontSize: Responsive.sp(context, 14),
             ),
             suffixIcon: suffixIcon != null
                 ? GestureDetector(
                     onTap: onSuffixTap,
-                    child: Icon(suffixIcon, color: AppColors.textLight, size: 20),
+                    child: Icon(suffixIcon, color: AppColors.textLight, size: Responsive.w(context, 20)),
                   )
                 : null,
             filled: true,
             fillColor: AppColors.background,
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(Responsive.w(context, 12)),
               borderSide: const BorderSide(color: AppColors.border),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(Responsive.w(context, 12)),
               borderSide: const BorderSide(color: AppColors.border),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(Responsive.w(context, 12)),
               borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
             ),
             errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(Responsive.w(context, 12)),
               borderSide: const BorderSide(color: AppColors.error),
             ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 14,
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: Responsive.w(context, 16),
+              vertical: Responsive.h(context, 14),
             ),
           ),
         ),
@@ -134,17 +136,17 @@ class LabeledTextField extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 13,
+          style: TextStyle(
+            fontSize: Responsive.sp(context, 13),
             fontWeight: FontWeight.w500,
             color: AppColors.textSecondary,
           ),
         ),
-        const SizedBox(height: 6),
+        SizedBox(height: Responsive.h(context, 6)),
         Container(
           decoration: BoxDecoration(
             color: AppColors.background,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(Responsive.w(context, 10)),
             border: Border.all(color: AppColors.border),
           ),
           child: TextField(
@@ -152,23 +154,23 @@ class LabeledTextField extends StatelessWidget {
             keyboardType: keyboardType,
             readOnly: readOnly,
             onTap: onTap,
-            style: const TextStyle(
-              fontSize: 15,
+            style: TextStyle(
+              fontSize: Responsive.sp(context, 15),
               color: AppColors.textPrimary,
             ),
             decoration: InputDecoration(
               hintText: hint,
-              hintStyle: const TextStyle(
+              hintStyle: TextStyle(
                 color: AppColors.textLight,
-                fontSize: 14,
+                fontSize: Responsive.sp(context, 14),
               ),
               prefixIcon: icon != null
-                  ? Icon(icon, color: AppColors.textLight, size: 20)
+                  ? Icon(icon, color: AppColors.textLight, size: Responsive.w(context, 20))
                   : null,
               border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 14,
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: Responsive.w(context, 16),
+                vertical: Responsive.h(context, 14),
               ),
             ),
           ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/primary_button.dart';
+import '../../core/utils/responsive.dart';
 import '../home/main_navigation.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -16,22 +17,28 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   final List<_OnboardingPage> _pages = [
     _OnboardingPage(
-      image: 'assets/images/onboardingscreens.png',
-      title: 'Welcome to LACA',
-      subtitle: 'Tanzania\'s #1 Logistics & Delivery Platform',
-      description: 'Send packages, book freight, clear cargo, and grow your agribusiness - all in one app.',
-    ),
-    _OnboardingPage(
-      image: 'assets/images/onboardingscreens.png',
-      title: 'Fast & Reliable Delivery',
+      image: 'assets/images/FastDelivery_onboarding_screen.jpg',
+      title: 'Fast & Reliable\nDelivery',
       subtitle: 'Door-to-Door Package Delivery',
       description: 'Send packages anywhere in Tanzania with real-time tracking and instant driver matching.',
     ),
     _OnboardingPage(
-      image: 'assets/images/onboardingscreens.png',
-      title: 'Grow Your Business',
-      subtitle: 'Agro Business & Cargo Solutions',
-      description: 'Access farm inputs, connect with markets, and manage your cargo clearing effortlessly.',
+      image: 'assets/images/Agriculture_onboarding screen.jpg',
+      title: 'Agro Business\nSolutions',
+      subtitle: 'Pembeyeo • Masoko • Usafirishaji',
+      description: 'Access farm inputs, connect with markets, and arrange transport for your agricultural produce.',
+    ),
+    _OnboardingPage(
+      image: 'assets/images/Import_cargo_onboarding_screen.jpg',
+      title: 'Import & Cargo\nClearing',
+      subtitle: 'Seamless Customs & Freight',
+      description: 'Import vehicles, clear cargo, and book freight with our complete logistics platform.',
+    ),
+    _OnboardingPage(
+      image: 'assets/images/Growth&Success_screen.jpg',
+      title: 'Grow Your\nBusiness',
+      subtitle: 'Tanzania\'s #1 Logistics Super-App',
+      description: 'Join thousands of businesses using LACA to deliver, import, track, and grow.',
     ),
   ];
 
@@ -44,12 +51,43 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Skip button
-            Padding(
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          // Full-screen PageView with background images
+          PageView.builder(
+            controller: _pageController,
+            onPageChanged: (index) {
+              setState(() => _currentPage = index);
+            },
+            itemCount: _pages.length,
+            itemBuilder: (context, index) {
+              return _buildFullScreenPage(_pages[index]);
+            },
+          ),
+          // Right-side tap zone for next page
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: () {
+                if (_currentPage < _pages.length - 1) {
+                  _pageController.nextPage(
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.easeInOut,
+                  );
+                }
+              },
+              child: Container(
+                alignment: Alignment.centerRight,
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.3,
+                  color: Colors.transparent,
+                ),
+              ),
+            ),
+          ),
+          // Top skip button
+          SafeArea(
+            child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -61,59 +99,104 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         MaterialPageRoute(builder: (_) => const LoginScreen()),
                       );
                     },
-                    child: const Text(
+                    child: Text(
                       'Skip',
                       style: TextStyle(
-                        color: AppColors.textSecondary,
+                        color: Colors.white.withValues(alpha: 0.8),
                         fontSize: 14,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-            // PageView
-            Expanded(
-              child: PageView.builder(
-                controller: _pageController,
-                onPageChanged: (index) {
-                  setState(() => _currentPage = index);
-                },
-                itemCount: _pages.length,
-                itemBuilder: (context, index) {
-                  return _buildPage(_pages[index]);
-                },
+          ),
+          // Bottom content: indicators + buttons
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Container(
+              padding: EdgeInsets.only(
+                left: 24,
+                right: 24,
+                top: 20,
+                bottom: MediaQuery.of(context).padding.bottom + 16,
               ),
-            ),
-            // Indicators
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                _pages.length,
-                (index) => AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  margin: const EdgeInsets.symmetric(horizontal: 4),
-                  width: _currentPage == index ? 24 : 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: _currentPage == index
-                        ? AppColors.primary
-                        : AppColors.border,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.transparent,
+                    Colors.black.withValues(alpha: 0.4),
+                    Colors.black.withValues(alpha: 0.85),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
                 ),
               ),
-            ),
-            const SizedBox(height: 32),
-            // Buttons
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
+                  // Title & subtitle (overlaid)
+                  Text(
+                    _pages[_currentPage].title,
+                    style: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      height: 1.2,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    _pages[_currentPage].subtitle,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.secondary,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    _pages[_currentPage].description,
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Colors.white.withValues(alpha: 0.75),
+                      height: 1.4,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 24),
+                  // Indicators
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      _pages.length,
+                      (index) => AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        margin: const EdgeInsets.symmetric(horizontal: 4),
+                        width: _currentPage == index ? 28 : 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: _currentPage == index
+                              ? AppColors.secondary
+                              : Colors.white.withValues(alpha: 0.4),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  // Buttons
                   PrimaryButton(
                     text: _currentPage == _pages.length - 1
                         ? 'Get Started'
                         : 'Next',
+                    backgroundColor: AppColors.secondary,
+                    textColor: Colors.white,
                     onPressed: () {
                       if (_currentPage == _pages.length - 1) {
                         Navigator.pushReplacement(
@@ -123,7 +206,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         );
                       } else {
                         _pageController.nextPage(
-                          duration: const Duration(milliseconds: 300),
+                          duration: const Duration(milliseconds: 400),
                           curve: Curves.easeInOut,
                         );
                       }
@@ -137,10 +220,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         MaterialPageRoute(builder: (_) => const LoginScreen()),
                       );
                     },
-                    child: const Text(
+                    child: Text(
                       'I already have an account',
                       style: TextStyle(
-                        color: AppColors.textSecondary,
+                        color: Colors.white.withValues(alpha: 0.6),
                         fontSize: 14,
                       ),
                     ),
@@ -148,60 +231,25 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 24),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildPage(_OnboardingPage page) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            height: 280,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              image: DecorationImage(
-                image: AssetImage(page.image),
-                fit: BoxFit.contain,
-              ),
-            ),
+  Widget _buildFullScreenPage(_OnboardingPage page) {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(page.image),
+          fit: BoxFit.cover,
+          colorFilter: ColorFilter.mode(
+            Colors.black.withValues(alpha: 0.25),
+            BlendMode.darken,
           ),
-          const SizedBox(height: 40),
-          Text(
-            page.title,
-            style: const TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 12),
-          Text(
-            page.subtitle,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: AppColors.secondary,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 12),
-          Text(
-            page.description,
-            style: const TextStyle(
-              fontSize: 14,
-              color: AppColors.textSecondary,
-              height: 1.5,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -529,4 +577,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-

@@ -59,6 +59,10 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>LACA uses your location to help find nearby pickup points and track shipments.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>LACA uses your location to provide real-time tracking of your shipments and vehicles.</string>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
